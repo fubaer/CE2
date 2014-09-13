@@ -11,7 +11,7 @@ import java.util.Vector;
 
 public class TextBuddyPlus {
 
-	private static String filePath = "text";
+	private static String filePath = "text.txt";
 	private static Scanner scanner = new Scanner(System.in);
 	private static Vector<String> buffer = new Vector<String>();
 
@@ -76,16 +76,14 @@ public class TextBuddyPlus {
 	static String executeCommand(String userInput) {
 		switch (getCommandType(userInput)) {
 		case ADD_LINE:
-			return (addLine(getCommandContent(userInput)));
+			return addLine(getCommandContent(userInput));
 			//		case DELETE_LINE:
 			//			deleteLine(getCommandContent(userInput));
 			//			break;
 		case DISPLAY:
-			return (display());
-			//			break;
-			//		case CLEAR:
-			//			clearAll();
-			//			break;
+			return display();
+		case CLEAR:
+			return clearAll();
 			//		case SORT:
 			//			sort(getCommandContent(userInput));
 			//			break;
@@ -103,6 +101,12 @@ public class TextBuddyPlus {
 		return "";
 	}
 
+	private static String clearAll() {
+		buffer.clear();
+		return ("all content deleted from "+ filePath);
+		
+	}
+
 	private static String display() {
 		for(int i=0; i< buffer.size(); i++){
 			String lineToAdd="";
@@ -116,7 +120,6 @@ public class TextBuddyPlus {
 			return (filePath + " is empty");
 		}
 		else{
-
 			return "";
 		}	
 	}
@@ -143,7 +146,7 @@ public class TextBuddyPlus {
 			else{
 				userInputSubstring = userInput;
 			}
-			
+
 			if (userInputSubstring.equalsIgnoreCase("add")) {
 				if (userInput.split(" ").length<2){
 					return CommandType.INVALID;
@@ -178,7 +181,9 @@ public class TextBuddyPlus {
 	}
 
 	private static void printToUser(String output){
-		System.out.println(output);
+		if (!output.equals("")){
+			System.out.println(output);
+		}
 	}
 
 	private static void verifyTextfile(String[] args) {
