@@ -13,10 +13,11 @@ public class TextBuddyPlus {
 
 	private static String filePath = "";
 	private static Scanner scanner = new Scanner(System.in);
-
-	// This vector will be use to store the text lines
 	private static Vector<String> buffer = new Vector<String>();
 
+	enum CommandType {
+		ADD_LINE, DELETE_LINE, DISPLAY,CLEAR, EXIT, INVALID, SORT, SEARCH
+	};
 
 	public static void main(String[] args) {
 		verifyTextfile(args);
@@ -24,8 +25,7 @@ public class TextBuddyPlus {
 		openFile(filePath);
 		while (true) {
 			System.out.print("command: ");
-			String command = scanner.nextLine();
-			executeCommand(command);
+			executeCommand(scanner.nextLine());
 			saveFile(filePath);
 		}
 
@@ -69,12 +69,68 @@ public class TextBuddyPlus {
 		}
 	}
 
-	private static void executeCommand(String command) {
-		// TODO Auto-generated method stub
+	private static void executeCommand(String userInput) {
+		switch (getCommandType(userInput)) {
+		case ADD_LINE:
+			addLine(getCommandContent(userInput));
+			break;
+		case DELETE_LINE:
+			deleteLine(getCommandContent(userInput));
+			break;
+		case DISPLAY:
+			display();
+			break;
+		case CLEAR:
+			clearAll();
+			break;
+		case INVALID:
+			System.out.println("Invalid Command issued!");
+			break;
+		case SORT:
+			sort(getCommandContent(userInput));
+			break;
+		case SEARCH:
+			search(getCommandContent(userInput));
+			break;
+		case EXIT:
+			System.exit(0);
+			break;
+		default:
+			System.out.println("Invalid Command issued!");
+		}
 
 	}
 
-	
+	private static String getCommandContent(String userInput) {
+		if (userInput.length()==1)
+		{
+			return scanner.nextLine();
+		}
+		else {
+			return userInput.substring(userInput.indexOf(' ')+1);
+		}
+		
+	}
+
+	private static CommandType getCommandType(String userInput) {
+		if (userInput.equalsIgnoreCase("add")) {
+			return CommandType.ADD_LINE;
+		} else if (userInput.equalsIgnoreCase("delete")) {
+			return CommandType.DELETE_LINE;
+		} else if (userInput.equalsIgnoreCase("display")) {
+			return CommandType.DISPLAY;
+		} else if (userInput.equalsIgnoreCase("clear")) {
+			return CommandType.CLEAR;
+		} else if (userInput.equalsIgnoreCase("sort")) {
+			return CommandType.SORT;
+		} else if (userInput.equalsIgnoreCase("search")) {
+			return CommandType.SEARCH;
+		} else if (userInput.equalsIgnoreCase("exit")) {
+			return CommandType.EXIT;
+		} else {
+			return CommandType.INVALID;
+		}		
+	}
 
 	private static void printWelcomeMessge(String filePath) {
 		System.out.println("Welcome to TextBuddy. " + filePath + " is ready for use");
