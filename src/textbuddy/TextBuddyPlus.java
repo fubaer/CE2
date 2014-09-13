@@ -77,11 +77,11 @@ public class TextBuddyPlus {
 		switch (getCommandType(userInput)) {
 		case ADD_LINE:
 			return (addLine(getCommandContent(userInput)));
-		//		case DELETE_LINE:
+			//		case DELETE_LINE:
 			//			deleteLine(getCommandContent(userInput));
 			//			break;
-			//		case DISPLAY:
-			//			display();
+		case DISPLAY:
+			return (display());
 			//			break;
 			//		case CLEAR:
 			//			clearAll();
@@ -98,9 +98,27 @@ public class TextBuddyPlus {
 		case INVALID:
 			return "Invalid Command issued!";
 		default:
-			
+
 		}
-		return "Invalid Command issued!";
+		return "";
+	}
+
+	private static String display() {
+		for(int i=0; i< buffer.size(); i++){
+			String lineToAdd="";
+			lineToAdd+=String.valueOf(i+1);
+			lineToAdd+=". ";
+			lineToAdd+=buffer.get(i);
+			System.out.println(lineToAdd);
+		}
+
+		if (buffer.size()==0){
+			return (filePath + " is empty");
+		}
+		else{
+
+			return "";
+		}	
 	}
 
 	static String addLine(String commandContent) {
@@ -110,28 +128,44 @@ public class TextBuddyPlus {
 	}
 
 	private static String getCommandContent(String userInput) {
-			return userInput.substring(userInput.indexOf(' ')+1);
+		return userInput.substring(userInput.indexOf(' ')+1);
 	}
 
 	private static CommandType getCommandType(String userInput) {
-		if (userInput.split(" ").length<2){
+		if (userInput.split(" ").length<1){
 			return CommandType.INVALID;
 		}
 		else {
-			userInput=userInput.substring(0,userInput.indexOf(' '));
-			if (userInput.equalsIgnoreCase("add")) {
+			String userInputSubstring;
+			if (userInput.split(" ").length>1){
+				userInputSubstring = userInput.substring(0,userInput.indexOf(' '));
+			}
+			else{
+				userInputSubstring = userInput;
+			}
+			
+			if (userInputSubstring.equalsIgnoreCase("add")) {
+				if (userInput.split(" ").length<2){
+					return CommandType.INVALID;
+				}
 				return CommandType.ADD_LINE;
-			} else if (userInput.equalsIgnoreCase("delete")) {
+			} else if (userInputSubstring.equalsIgnoreCase("delete")) {
+				if (userInput.split(" ").length<2){
+					return CommandType.INVALID;
+				}
 				return CommandType.DELETE_LINE;
-			} else if (userInput.equalsIgnoreCase("display")) {
+			} else if (userInputSubstring.equalsIgnoreCase("display")) {
 				return CommandType.DISPLAY;
-			} else if (userInput.equalsIgnoreCase("clear")) {
+			} else if (userInputSubstring.equalsIgnoreCase("clear")) {
 				return CommandType.CLEAR;
-			} else if (userInput.equalsIgnoreCase("sort")) {
+			} else if (userInputSubstring.equalsIgnoreCase("sort")) {
 				return CommandType.SORT;
-			} else if (userInput.equalsIgnoreCase("search")) {
+			} else if (userInputSubstring.equalsIgnoreCase("search")) {
+				if (userInput.split(" ").length<2){
+					return CommandType.INVALID;
+				}
 				return CommandType.SEARCH;
-			} else if (userInput.equalsIgnoreCase("exit")) {
+			} else if (userInputSubstring.equalsIgnoreCase("exit")) {
 				return CommandType.EXIT;
 			} else {
 				return CommandType.INVALID;
