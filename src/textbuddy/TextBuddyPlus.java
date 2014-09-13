@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -77,19 +78,16 @@ public class TextBuddyPlus {
 		switch (getCommandType(userInput)) {
 		case ADD_LINE:
 			return addLine(getCommandContent(userInput));
-			//		case DELETE_LINE:
-			//			deleteLine(getCommandContent(userInput));
-			//			break;
+		case DELETE_LINE:
+			return deleteLine(getCommandContent(userInput));
 		case DISPLAY:
 			return display();
 		case CLEAR:
 			return clearAll();
-			//		case SORT:
-			//			sort(getCommandContent(userInput));
-			//			break;
-			//		case SEARCH:
-			//			search(getCommandContent(userInput));
-			//			break;
+		case SORT:
+			return sort();
+		case SEARCH:
+			return search(getCommandContent(userInput));
 		case EXIT:
 			System.exit(0);
 			break;
@@ -101,10 +99,42 @@ public class TextBuddyPlus {
 		return "";
 	}
 
+	static String search(String commandContent) {
+		boolean isFound = false;
+		for(int i=0; i< buffer.size(); i++){
+			if (buffer.get(i).toLowerCase().indexOf(commandContent.toLowerCase())>-1){
+				printToUser(commandContent + " has been found in: " +String.valueOf(i+1)+ ". "+ buffer.get(i));
+				isFound = true;
+			}
+		}
+		if (isFound){
+			return "";
+		}
+		return (commandContent + " is not found within " + filePath);
+	}
+
+	private static String sort() {
+		return "To do list has been sorted";
+	}
+
+	private static String deleteLine(String commandContent) {
+
+		int lineNumber=Integer.parseInt(commandContent);
+		if (lineNumber<1||lineNumber>buffer.size()){
+			return "Trying to delete invalid line";
+		}
+		else{
+			String stringDeleted="";
+			stringDeleted=buffer.get(lineNumber-1);
+			buffer.remove(lineNumber-1);
+			return ("deleted from " + filePath + ": " + "\"" + stringDeleted + "\"");
+		}
+	}
+
 	private static String clearAll() {
 		buffer.clear();
 		return ("all content deleted from "+ filePath);
-		
+
 	}
 
 	private static String display() {
@@ -116,7 +146,7 @@ public class TextBuddyPlus {
 			System.out.println(lineToAdd);
 		}
 
-		if (buffer.size()==0){
+		if (getLineCount()==0){
 			return (filePath + " is empty");
 		}
 		else{
@@ -124,8 +154,12 @@ public class TextBuddyPlus {
 		}	
 	}
 
+	static int getLineCount(){
+		return buffer.size();
+	}
+
 	static String addLine(String commandContent) {
-		buffer.add(commandContent);
+		buffer.add(commandContent.trim());
 		String confirmation = "added to " + filePath + ": \"" + commandContent + "\"";
 		return confirmation;
 	}
