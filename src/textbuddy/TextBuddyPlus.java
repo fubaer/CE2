@@ -11,7 +11,7 @@ import java.util.Vector;
 
 public class TextBuddyPlus {
 
-	private static String filePath = "";
+	private static String filePath = "text";
 	private static Scanner scanner = new Scanner(System.in);
 	private static Vector<String> buffer = new Vector<String>();
 
@@ -23,14 +23,18 @@ public class TextBuddyPlus {
 		verifyTextfile(args);
 		printWelcomeMessge(filePath);
 		openFile(filePath);
-		while (true) {
-			System.out.print("command: ");
-			executeCommand(scanner.nextLine());
-			saveFile(filePath);
-		}
+		textBuddyManager();
 
 	}
-	
+
+	private static void textBuddyManager() {
+		while (true) {
+			System.out.print("command: ");
+			printToUser(executeCommand(scanner.nextLine()));
+			saveFile(filePath);
+		}
+	}
+
 	private static void openFile(String filePath) {
 		try { // check if file exist if not create a new file with that name
 			File file = new File(filePath);
@@ -69,71 +73,78 @@ public class TextBuddyPlus {
 		}
 	}
 
-	private static void executeCommand(String userInput) {
+	static String executeCommand(String userInput) {
 		switch (getCommandType(userInput)) {
 		case ADD_LINE:
-			addLine(getCommandContent(userInput));
-			break;
-		case DELETE_LINE:
-			deleteLine(getCommandContent(userInput));
-			break;
-		case DISPLAY:
-			display();
-			break;
-		case CLEAR:
-			clearAll();
-			break;
-		case INVALID:
-			System.out.println("Invalid Command issued!");
-			break;
-		case SORT:
-			sort(getCommandContent(userInput));
-			break;
-		case SEARCH:
-			search(getCommandContent(userInput));
-			break;
+			return (addLine(getCommandContent(userInput)));
+		//		case DELETE_LINE:
+			//			deleteLine(getCommandContent(userInput));
+			//			break;
+			//		case DISPLAY:
+			//			display();
+			//			break;
+			//		case CLEAR:
+			//			clearAll();
+			//			break;
+			//		case SORT:
+			//			sort(getCommandContent(userInput));
+			//			break;
+			//		case SEARCH:
+			//			search(getCommandContent(userInput));
+			//			break;
 		case EXIT:
 			System.exit(0);
 			break;
+		case INVALID:
+			return "Invalid Command issued!";
 		default:
-			System.out.println("Invalid Command issued!");
+			
 		}
+		return "Invalid Command issued!";
+	}
 
+	static String addLine(String commandContent) {
+		buffer.add(commandContent);
+		String confirmation = "added to " + filePath + ": \"" + commandContent + "\"";
+		return confirmation;
 	}
 
 	private static String getCommandContent(String userInput) {
-		if (userInput.length()==1)
-		{
-			return scanner.nextLine();
-		}
-		else {
 			return userInput.substring(userInput.indexOf(' ')+1);
-		}
-		
 	}
 
 	private static CommandType getCommandType(String userInput) {
-		if (userInput.equalsIgnoreCase("add")) {
-			return CommandType.ADD_LINE;
-		} else if (userInput.equalsIgnoreCase("delete")) {
-			return CommandType.DELETE_LINE;
-		} else if (userInput.equalsIgnoreCase("display")) {
-			return CommandType.DISPLAY;
-		} else if (userInput.equalsIgnoreCase("clear")) {
-			return CommandType.CLEAR;
-		} else if (userInput.equalsIgnoreCase("sort")) {
-			return CommandType.SORT;
-		} else if (userInput.equalsIgnoreCase("search")) {
-			return CommandType.SEARCH;
-		} else if (userInput.equalsIgnoreCase("exit")) {
-			return CommandType.EXIT;
-		} else {
+		if (userInput.split(" ").length<2){
 			return CommandType.INVALID;
-		}		
+		}
+		else {
+			userInput=userInput.substring(0,userInput.indexOf(' '));
+			if (userInput.equalsIgnoreCase("add")) {
+				return CommandType.ADD_LINE;
+			} else if (userInput.equalsIgnoreCase("delete")) {
+				return CommandType.DELETE_LINE;
+			} else if (userInput.equalsIgnoreCase("display")) {
+				return CommandType.DISPLAY;
+			} else if (userInput.equalsIgnoreCase("clear")) {
+				return CommandType.CLEAR;
+			} else if (userInput.equalsIgnoreCase("sort")) {
+				return CommandType.SORT;
+			} else if (userInput.equalsIgnoreCase("search")) {
+				return CommandType.SEARCH;
+			} else if (userInput.equalsIgnoreCase("exit")) {
+				return CommandType.EXIT;
+			} else {
+				return CommandType.INVALID;
+			}		
+		}
 	}
 
 	private static void printWelcomeMessge(String filePath) {
 		System.out.println("Welcome to TextBuddy. " + filePath + " is ready for use");
+	}
+
+	private static void printToUser(String output){
+		System.out.println(output);
 	}
 
 	private static void verifyTextfile(String[] args) {
@@ -141,16 +152,13 @@ public class TextBuddyPlus {
 			filePath = args[0];
 		}
 		catch(IndexOutOfBoundsException e){
-			System.out.println("Invalid Textfile name please enter a valid name!");
+			System.out.println("Invalid Textfile name ! Please enter a valid name:");
+			System.out.println("Please enter a valid name: ");
 		}
 		finally{
 			while(filePath.isEmpty()){
 				filePath = scanner.nextLine();
 			}
 		}
-
 	}
-
-
-
 }
