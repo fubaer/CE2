@@ -6,16 +6,51 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Scanner;
 import java.util.Vector;
 
+/**
+* TextBuddy is a command-line program that edits  text in a specified
+* file. The file will be created if it does not exist. If file already exists,
+* additional text will be added to the end of the file.
+* 
+* Current TextBuddy available command
+* are: add, delete, display, clear, search, sort, exit.
+* 
+* Example run of the program: 
+* 
+* c:>java TextBuddy mytextfile.txt 
+* Welcome to TextBuddy. mytextfile.txt is ready for use 
+* command: add little brown fox
+* added to mytextfile.txt: “little brown fox” 
+* command: display 
+* 1. little brown fox 
+* command: add jumped over the moon 
+* added to mytextfile.txt: “jumped over the moon” 
+* command: display 
+* 1. little brown fox 
+* 2. jumped over the moon
+* command: delete 2 
+* deleted from mytextfile.txt: “jumped over the moon”
+* command: display 
+* 1. little brown fox
+* command: clear all content deleted from mytextfile.txt 
+* command: display 
+* mytextfile.txt is empty 
+* command: exit 
+* c:>
+* 
+* @author Tean Zheng Yang
+*/
+
 public class TextBuddyPlus {
 
-	private static String filePath = "text.txt";
+	private static String filePath = "";
 	private static Scanner scanner = new Scanner(System.in);
 	private static Vector<String> buffer = new Vector<String>();
 
+	//Possible Commands
 	enum CommandType {
 		ADD_LINE, DELETE_LINE, DISPLAY,CLEAR, EXIT, INVALID, SORT, SEARCH
 	};
@@ -27,7 +62,11 @@ public class TextBuddyPlus {
 		textBuddyManager();
 
 	}
-
+	
+	/**
+	 * TextBuddyManager
+	 * handle the the TextBuddy till exit code is recieved
+	 */
 	private static void textBuddyManager() {
 		while (true) {
 			System.out.print("command: ");
@@ -35,9 +74,12 @@ public class TextBuddyPlus {
 			saveFile(filePath);
 		}
 	}
-
+	
+	/**
+	 * This operation is open file, creates a new one if one does not exist
+	 */
 	private static void openFile(String filePath) {
-		try { // check if file exist if not create a new file with that name
+		try { 
 			File file = new File(filePath);
 			if (!file.exists()) {
 				file.createNewFile();
@@ -55,6 +97,9 @@ public class TextBuddyPlus {
 		}
 	}
 
+	/**
+	 * This operation is used save any changes made to the file
+	 */
 	private static void saveFile(String filePath) {
 		File file = new File(filePath);
 		file.delete();
@@ -74,6 +119,9 @@ public class TextBuddyPlus {
 		}
 	}
 
+	/**
+	 * This operation is used interprete the user input
+	 */
 	static String executeCommand(String userInput) {
 		switch (getCommandType(userInput)) {
 		case ADD_LINE:
@@ -94,11 +142,14 @@ public class TextBuddyPlus {
 		case INVALID:
 			return "Invalid Command issued!";
 		default:
-
+			return "Invalid Command issued!";
 		}
 		return "";
 	}
 
+	/**
+	 * This operation is used search if the string is within the textbuddy
+	 */
 	static String search(String commandContent) {
 		boolean isFound = false;
 		for(int i=0; i< buffer.size(); i++){
@@ -113,10 +164,17 @@ public class TextBuddyPlus {
 		return (commandContent + " is not found within " + filePath);
 	}
 
-	private static String sort() {
-		return "To do list has been sorted";
+	/**
+	 * This operation is used to sort the text within textbuddy
+	 */
+	static String sort() {
+		Collections.sort(buffer);
+		return "TextBuddy has been sorted!";
 	}
 
+	/**
+	 * This operation is used to delete specific line in the text buddy
+	 */
 	private static String deleteLine(String commandContent) {
 
 		int lineNumber=Integer.parseInt(commandContent);
@@ -131,12 +189,18 @@ public class TextBuddyPlus {
 		}
 	}
 
+	/**
+	 * This operation is used to delete everything within textbuddy
+	 */
 	private static String clearAll() {
 		buffer.clear();
 		return ("all content deleted from "+ filePath);
 
 	}
 
+	/**
+	 * This operation is used to show all text within text buddy
+	 */
 	private static String display() {
 		for(int i=0; i< buffer.size(); i++){
 			String lineToAdd="";
@@ -154,20 +218,32 @@ public class TextBuddyPlus {
 		}	
 	}
 
+	/**
+	 * This operation is used count the number of lines within the buffer
+	 */
 	static int getLineCount(){
 		return buffer.size();
 	}
-
+	
+	/**
+	 * This operation is used to extract the content of the input
+	 */
 	static String addLine(String commandContent) {
 		buffer.add(commandContent.trim());
 		String confirmation = "added to " + filePath + ": \"" + commandContent + "\"";
 		return confirmation;
 	}
 
+	/**
+	 * This operation is used to extract the command of the input
+	 */
 	private static String getCommandContent(String userInput) {
 		return userInput.substring(userInput.indexOf(' ')+1);
 	}
 
+	/**
+	 * This operation is used to run the intepreted user input
+	 */
 	private static CommandType getCommandType(String userInput) {
 		if (userInput.split(" ").length<1){
 			return CommandType.INVALID;
@@ -210,16 +286,25 @@ public class TextBuddyPlus {
 		}
 	}
 
+	/**
+	 * This operation is used print the greetings for the user
+	 */
 	private static void printWelcomeMessge(String filePath) {
 		System.out.println("Welcome to TextBuddy. " + filePath + " is ready for use");
 	}
 
+	/**
+	 * This operation is used print string to user
+	 */
 	private static void printToUser(String output){
 		if (!output.equals("")){
 			System.out.println(output);
 		}
 	}
 
+	/**
+	 * This operation is used confirm if the file name input in valid
+	 */
 	private static void verifyTextfile(String[] args) {
 		try{
 			filePath = args[0];

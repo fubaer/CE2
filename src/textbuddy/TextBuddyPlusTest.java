@@ -46,8 +46,9 @@ public class TextBuddyPlusTest {
 		TextBuddyPlus.executeCommand("add Ancient mystery");
 		TextBuddyPlus.executeCommand("add Somewhere deep in the woods");
 		assertEquals(TextBuddyPlus.search("fox"),"fox is not found within text.txt");
-
-
+		
+		// Test Sort
+		assertEquals(TextBuddyPlus.sort(),"TextBuddy has been sorted!");
 
 	}
 
