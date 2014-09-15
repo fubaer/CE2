@@ -54,7 +54,16 @@ public class TextBuddyPlus {
 	enum CommandType {
 		ADD_LINE, DELETE_LINE, DISPLAY,CLEAR, EXIT, INVALID, SORT, SEARCH
 	};
-
+	
+	//Messages
+	private static final String MESSAGE_FILE_INITIALISATION_ERROR = "Exception encountered while initalising the textfile";
+	private static final String MESSAGE_FILE_SAVING_ERROR = "Exception encountered while saving the textfile";
+	private static final String MESSAGE_COMMAND_INVALID = "Invalid Command issued!";
+	private static final String MESSAGE_SORTED = "TextBuddy has been sorted!";
+	private static final String MESSAGE_DELETE_INVALID = "Trying to delete invalid line";
+	private static final String MESSAGE_FILENAME_INVALID = "Invalid Textfile name!";
+	private static final String MESSAGE_ENTER_FILENAME = "Please enter a valid name: ";
+	
 	public static void main(String[] args) {
 		verifyTextfile(args);
 		printWelcomeMessge(filePath);
@@ -65,7 +74,7 @@ public class TextBuddyPlus {
 	
 	/**
 	 * TextBuddyManager
-	 * handle the the TextBuddy till exit code is recieved
+	 * handle the the TextBuddy till exit code is received
 	 */
 	private static void textBuddyManager() {
 		while (true) {
@@ -92,7 +101,7 @@ public class TextBuddyPlus {
 			}
 			fileReader.close();
 		} catch (IOException e) {
-			System.out.println("Exception encountered while initalising the textfile");
+			System.out.println(MESSAGE_FILE_INITIALISATION_ERROR);
 			System.exit(0);
 		}
 	}
@@ -106,15 +115,15 @@ public class TextBuddyPlus {
 		try {
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
-			for(int i=0; i< buffer.size(); i++){
+			for(int i = 0; i < buffer.size(); i++){
 				bw.write(buffer.get(i));
-				if (i<buffer.size()-1){
+				if (i < buffer.size() - 1){
 					bw.newLine(); 
 				}
 			}
 			bw.close();
 		} catch (IOException e) {
-			System.out.println("Exception encountered while saving the textfile");
+			System.out.println(MESSAGE_FILE_SAVING_ERROR);
 			System.exit(0);
 		}
 	}
@@ -140,9 +149,9 @@ public class TextBuddyPlus {
 			System.exit(0);
 			break;
 		case INVALID:
-			return "Invalid Command issued!";
+			return MESSAGE_COMMAND_INVALID;
 		default:
-			return "Invalid Command issued!";
+			return MESSAGE_COMMAND_INVALID;
 		}
 		return "";
 	}
@@ -169,7 +178,7 @@ public class TextBuddyPlus {
 	 */
 	static String sort() {
 		Collections.sort(buffer);
-		return "TextBuddy has been sorted!";
+		return MESSAGE_SORTED;
 	}
 
 	/**
@@ -179,7 +188,7 @@ public class TextBuddyPlus {
 
 		int lineNumber=Integer.parseInt(commandContent);
 		if (lineNumber<1||lineNumber>buffer.size()){
-			return "Trying to delete invalid line";
+			return MESSAGE_DELETE_INVALID;
 		}
 		else{
 			String stringDeleted="";
@@ -230,7 +239,7 @@ public class TextBuddyPlus {
 	 */
 	static String addLine(String commandContent) {
 		buffer.add(commandContent.trim());
-		String confirmation = "added to " + filePath + ": \"" + commandContent + "\"";
+		String confirmation = "added to " + filePath + ": \"" + commandContent.trim() + "\"";
 		return confirmation;
 	}
 
@@ -310,8 +319,8 @@ public class TextBuddyPlus {
 			filePath = args[0];
 		}
 		catch(IndexOutOfBoundsException e){
-			System.out.println("Invalid Textfile name ! Please enter a valid name:");
-			System.out.println("Please enter a valid name: ");
+			System.out.println(MESSAGE_FILENAME_INVALID);
+			System.out.println(MESSAGE_ENTER_FILENAME);
 		}
 		finally{
 			while(filePath.isEmpty()){
